@@ -94,7 +94,9 @@ Refer to the [docker-compose.yml code:](https://github.com/VoiceLessQ/Docker/blo
 If needed, you can customize the configuration based on your project requirements. Refer to the comments in the `docker-compose.yml` file for guidance.
 
 ## Run Docker Compose:
-docker-compose up -d
+To deploy the Docker Compose configuration, run the following command in your terminal:
+`docker-compose up -d`
+
 
 This command will start the Docker containers defined in the docker-compose.yml file.
 
