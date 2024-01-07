@@ -80,10 +80,8 @@ To use this Docker Compose configuration for your project, follow these steps:
 
 
 # How to Use the Docker Compose Configuration for Your Project
-
-## Clone the Repository:
-
-## Copy Docker Compose Configuration:
+Clone the Repository:
+Copy Docker Compose Configuration:
 
 Copy the provided `docker-compose.yml` file into your project directory. Note; I just lerned to add code:
 Refer to the [docker-compose.yml code:](https://github.com/VoiceLessQ/Docker/blob/main/docker-compose.yml) for more details on deploying in a production environment.
