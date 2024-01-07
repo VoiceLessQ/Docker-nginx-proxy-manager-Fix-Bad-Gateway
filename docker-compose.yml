@@ -1,40 +1,42 @@
 version: "3.8"
 
 services:
+  # NGINX Proxy Manager Service
   app:
     container_name: nginx-proxy-manager
     image: jc21/nginx-proxy-manager
     hostname: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - 9090:80
-      - 444:443
-      - 9595:81
+      - 9090:80    # Map host port 9090 to container port 80 for HTTP
+      - 444:443    # Map host port 444 to container port 443 for HTTPS
+      - 9595:81    # Map host port 9595 to container port 81 for NGINX Proxy Manager web interface
     environment:
-      DISABLE_IPV6: 'true'
+      DISABLE_IPV6: 'true'  # Disable IPv6 to prevent potential issues
     volumes:
-      - /opt/nginx-proxy-manager/config.json:/app/config/production.json
-      - /opt/nginx-proxy-manager/data:/data
-      - ./letsencrypt:/etc/letsencrypt
+      - /opt/nginx-proxy-manager/config.json:/app/config/production.json  # Mount the NGINX Proxy Manager configuration file
+      - /opt/nginx-proxy-manager/data:/data    # Mount data directory for persistent data storage
+      - ./letsencrypt:/etc/letsencrypt         # Mount letsencrypt directory for SSL certificates
     depends_on:
-      - db
+      - db    # Ensure this service starts after the 'db' service
     healthcheck:
-      test: ["CMD", "/bin/check-health"]
-      interval: 10s
-      timeout: 3s
+      test: ["CMD", "/bin/check-health"]  # Health check command
+      interval: 10s   # Check health every 10 seconds
+      timeout: 3s     # Timeout for health check
 
+  # MariaDB Database Service
   db:
     container_name: proxy-mariadb
     image: yobasystems/alpine-mariadb:10.5.11
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 'password!'
-      MYSQL_DATABASE: 'npm'
-      MYSQL_USER: 'VoiceLessQ'
-      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password!'  # Root password for MariaDB
+      MYSQL_DATABASE: 'npm'             # Database name for NGINX Proxy Manager
+      MYSQL_USER: 'VoiceLessQ'          # Database user for NGINX Proxy Manager
+      MYSQL_PASSWORD: 'password'        # Password for the database user
     volumes:
-      - /opt/nginx-proxy-manager/data/mysql:/var/lib/mysql
+      - /opt/nginx-proxy-manager/data/mysql:/var/lib/mysql  # Mount data directory for MariaDB persistent data storage
 
 networks:
   default:
-    name: proxy
+    name: proxy   # Use a custom network named 'proxy' for communication between services
