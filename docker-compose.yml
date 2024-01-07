@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager
+    hostname: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - 9090:80
+      - 444:443
+      - 9595:81
+    environment:
+      DISABLE_IPV6: 'true'
+    volumes:
+      - /opt/nginx-proxy-manager/config.json:/app/config/production.json
+      - /opt/nginx-proxy-manager/data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD", "/bin/check-health"]
+      interval: 10s
+      timeout: 3s
+
+  db:
+    container_name: proxy-mariadb
+    image: yobasystems/alpine-mariadb:10.5.11
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 'password!'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'VoiceLessQ'
+      MYSQL_PASSWORD: 'password'
+    volumes:
+      - /opt/nginx-proxy-manager/data/mysql:/var/lib/mysql
+
+networks:
+  default:
+    name: proxy
